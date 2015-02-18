@@ -11,6 +11,7 @@ import game.object.Bullet;
 import game.object.Objects;
 import java.util.ArrayList;
 import java.util.Random;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -143,9 +144,9 @@ public class Room {
     
     
     public void render(Graphics g, int camx, int camy, int ssizex, int ssizey, Player player, Game game) {
-        int h = game.app.getHeight();
-        for (double i = -camx / 3 - game.app.getWidth() / 2.0 * 3.0; i < camx / 3 + game.app.getWidth() / 2.0 * 3.0; i += h) {
-             Block.block[199].sprite.draw((int)i, 0, h, h);
+        int h = Display.getHeight();
+        for (double i = -camx / 3 - game.app.getWidth() / 2.0 * 3.0; i < camx / 3 + game.app.getWidth() / 2.0 * 3.0; i += ssizey) {
+             Block.block[199].sprite.draw((int)i, 0, ssizey, ssizey);
         }
 
         GL11.glTranslatef(-camx-32, -camy-32, 0);

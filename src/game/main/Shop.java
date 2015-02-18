@@ -6,6 +6,7 @@ package game.main;
 import java.io.File;
 import java.util.HashMap;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -88,8 +89,11 @@ public class Shop {
     }
     
     public void render(Graphics g) {
+        GL11.glLoadIdentity();
+                        System.out.println("wow");
         g.drawString("Your inventory",700,30);
         g.drawImage(images.get("weapon"),150,120);
+        images.get("weapon").draw(150,120);
         g.drawImage(images.get("armour"),200,120);
         for(int x = 3; x < 6;x++){
             for(int y = 3; y < 5;y++){
@@ -98,6 +102,9 @@ public class Shop {
         drawDescription(g);
         g.setColor(Color.gray);
         g.drawImage(images.get("frame"),99 + 50*x, 69 + y*50);
+        
+        
+        
     }
     
         public void drawDescription(Graphics g) {

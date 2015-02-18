@@ -5,6 +5,7 @@ package game.main;
 
 import game.creature.Player;
 import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -44,8 +45,16 @@ public class Gui {
         ysize = game.sSizeY;
     }
     
+    int frames = 0;
+    int l = new Date().getSeconds();
+    
     public void tick() {
-        fps = game.app.getFPS();
+        frames++;
+        if(l!=new Date().getSeconds()){
+            fps = frames;
+            frames = 0;
+            l = new Date().getSeconds();
+        }
         if(game.shop)si = true;
         else si = false;
     }
@@ -62,5 +71,4 @@ public class Gui {
             g.drawString("HP"+player.hp,0,85);
         }
     }
-    
 }
