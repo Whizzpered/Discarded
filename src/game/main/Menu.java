@@ -5,6 +5,7 @@ package game.main;
 
 import java.util.Map;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -62,37 +63,40 @@ public class Menu {
         }
     }
    
-    public void render(Graphics g, Game game, int sizex) {
+    public void render(Graphics g, Game game) {
+        
+        int w = Display.getWidth();
+        int h = Display.getHeight();
         if(settings){
             g.setColor(Color.green);
-             g.drawRect(sizex/2-200, 280, 400, 50);
+             g.drawRect(w/2-200, 280, 400, 50);
              
             g.setColor(Color.gray);
-            g.fillRect(sizex/2-200, 40 + but*120, 400, 50);
+            g.fillRect(w/2-200, 40 + but*120, 400, 50);
             
             g.setColor(Color.green);
-            g.drawString("menu", sizex/2-100,280);
+            g.drawString("menu", w/2-100,280);
             
         } else if(credits){
             g.setColor(Color.green);
-            g.drawString("Programmer: Whizzpered", sizex/2-200,160);
-            g.drawString("Designer & Consultant: Yew Mentzaki", sizex/2-200,200);
-            g.drawString("Аssistance in the design : VanHunter", sizex/2-200,240);
+            g.drawString("Programmer: Whizzpered", w/2-200,160);
+            g.drawString("Designer & Consultant: Yew Mentzaki", w/2-200,200);
+            g.drawString("Аssistance in the design : VanHunter", w/2-200,240);
             
         } else {
             g.setColor(Color.green);
             for(int i = 1; i < 5;i++){
-                g.drawRect(sizex/2-200, 40 + i*80, 400, 50);
+                g.drawRect(w/2-200, 40 + i*80, 400, 50);
             }
         
             g.setColor(Color.gray);
-            g.fillRect(sizex/2-200, 40 + but*80, 400, 50);
+            g.fillRect(w/2-200, 40 + but*80, 400, 50);
         
             g.setColor(Color.green);
-            g.drawString("play", sizex/2-100,130);
-            g.drawString("settings", sizex/2-100,210);
-            g.drawString("about", sizex/2-100,290);
-            g.drawString("exit", sizex/2-100,370);
+            g.drawString("play", w/2-100,130);
+            g.drawString("settings", w/2-100,210);
+            g.drawString("about", w/2-100,290);
+            g.drawString("exit", w/2-100,370);
         }
     }
 }

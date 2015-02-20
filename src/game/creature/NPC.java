@@ -9,6 +9,7 @@ import game.object.Objects;
 import game.world.Block;
 import game.world.Room;
 import java.io.File;
+import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -55,10 +56,12 @@ public class NPC extends Creature{
     public void tick(Game game) {
         super.tick(game);
         if(hp<=0)die(game);
-        //if(roomloc!=game.player.roomloc)game.room.npcies.remove(this);
         interaction(game.room, game);
         findEnemy(game);
-        
+        ai(game);
+    }
+    
+    public void ai(Game game) {
         if((Math.abs(y-ey)>=256 && condition ==2) || ((Math.abs(y-ey)>dist) && condition ==2) ){
              condition = 0;
             start("attention");
@@ -172,9 +175,10 @@ public class NPC extends Creature{
     }
  
     
-    public void render(Graphics g, int camx, int camy, int ssizex, int ssizey, Game game){
-        if(Math.abs(x - game.player.x)<=(ssizex/2)+360 && Math.abs(y - game.player.y)<=(ssizey/2)+360){
-                g.drawImage(images.get("robot"), (float)x,(float)y);
+    public void render(Graphics g, Game game){
+        if(Math.abs(x - game.player.x)<=(Display.getWidth()/2)+360 && Math.abs(y - game.player.y)<=(Display.getHeight()/2)+360){
+                if(dir==1)g.drawImage(images.get("robot_right"), (float)x,(float)y);
+                else g.drawImage(images.get("robot_left"), (float)x,(float)y);
         }
     }
 }

@@ -13,17 +13,19 @@ import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.Display;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 public class Game extends BasicGame {
 
     public Game game = this;
     public Player player;
-    public Shop shp;
     public Menu men;
     public Room room, prevRoom;
 
@@ -43,7 +45,7 @@ public class Game extends BasicGame {
             public void run() {
                 if (shop) {
                     try {
-                        shp.buttons(game);
+                        player.shop.buttons(game);
                     } catch (Exception ex) {
                     }
                 } else if (menu) {
@@ -69,7 +71,7 @@ public class Game extends BasicGame {
                 if (!menu && !shop && !training) {
                     player.tick(game);
                     room.blockTim--;
-                    for (NPC en : room.getNPCArr(room.npcies)) {
+                    for (NPC en : room.getNPCArr()) {
                         en.tick(game);
                     }
                 }
@@ -82,10 +84,10 @@ public class Game extends BasicGame {
         new Timer().schedule(new TimerTask() {
             public void run() {
                 if (!menu && !shop && !training) {
-                    for (Bullet bul : room.getBullArr(room.bullets)) {
+                    for (Bullet bul : room.getBullArr()) {
                         bul.tick(room, game);
                     }
-                    for (Objects obj : room.getObjArr(room.objects)) {
+                    for (Objects obj : room.getObjArr()) {
                         obj.tick(game);
                     }
                 }
@@ -97,6 +99,7 @@ public class Game extends BasicGame {
     public static void main(String[] arguments) throws SlickException {
         setNatives();
         app = new AppGameContainer(new Game());
+        Display.setResizable(true);
         app.setDisplayMode(1366, 768, false);
         sSizeX = app.getWidth();
         sSizeY = app.getHeight();
@@ -104,7 +107,6 @@ public class Game extends BasicGame {
         app.setAlwaysRender(true);
         app.setShowFPS(false);
         app.start();
-
     }
 
     public void buttons() throws SlickException {
@@ -118,15 +120,14 @@ public class Game extends BasicGame {
             player.vx = 0;
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_W) || Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+        if ((Keyboard.isKeyDown(Keyboard.KEY_W) || Keyboard.isKeyDown(Keyboard.KEY_UP))&& player.onStairs) {
             player.y -= 3;
         }
         if ((Keyboard.isKeyDown(Keyboard.KEY_SPACE)) && !player.onStairs) {
             player.jump(room);
         }
 
-        if ((Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_UP)) && !player.onStairs); 
-        else if (Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+        if ((Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_DOWN)) && player.onStairs) {
             player.y += 3;
         }
 
@@ -146,20 +147,26 @@ public class Game extends BasicGame {
             menu = true;
             men.butt.start();
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_P) && shp.butt.is()) {
+        if (Keyboard.isKeyDown(Keyboard.KEY_I) && player.shop.butt.is()) {
+            player.invent = true;
             shop = true;
-            shp.butt.start();
+            player.shop.butt.start();
+        }
+        if (Keyboard.isKeyDown(Input.KEY_ENTER) && men.butt.is() && training) {
+            training = false;
+            men.butt.start();
         }
         men.butt.tick();
-        shp.butt.tick();
+        player.shop.butt.tick();
     }
 
     @Override
     public void init(GameContainer container) throws SlickException {
         menu = true;
+        training = true;
         room = new Room(1, 0);
         player = new Player();
-        shp = new Shop();
+        player.shop = new Inventory();
         men = new Menu();
         player.gui.set(game);
         Block.setBlocks();
@@ -170,21 +177,22 @@ public class Game extends BasicGame {
 
     @Override
     public void update(GameContainer container, int delta) throws SlickException {
-
+        
     }
 
     @Override
     public void render(GameContainer container, Graphics g) throws SlickException {
         if (menu) {
-            men.render(g, game, sSizeX);
-        } else {
-            room.render(g, real_cam_x, real_cam_y, sSizeX, sSizeY, player, game); // There is a hero, npc'ies and objects render
-            if (shop) {
-                shp.render(g);
-            }
-            if(training){
-                
-            }
+            men.render(g, game);
+        } else if(training){
+            g.setColor(Color.green);
+                g.drawString("WASD or arrows  for moving", Display.getWidth()/2-200,160);
+                g.drawString("SPACE for jumping", Display.getWidth()/2-200,200);
+                g.drawString("Q for shooting", Display.getWidth()/2-200,240);
+                g.drawString("I for inventory and upgrades", Display.getWidth()/2-200,280);
+        }
+        else {
+            room.render(g, real_cam_x, real_cam_y, player, game); // There is a hero, npc'ies and objects render 
         }
         player.gui.render(g);
     }
@@ -192,7 +200,7 @@ public class Game extends BasicGame {
     public void cameras() {
         cam_y = ((cam_y * 7) + (int) player.y) / 8;
         cam_x = ((cam_x * 70) + (int) player.x) / 71;
-        real_cam_x = (int) (player.x * 2 - cam_x - (sSizeX / 2));
+        real_cam_x = (int) (cam_x - (sSizeX / 2));
         real_cam_y = (int) (cam_y - (sSizeY / 2));
     }
 

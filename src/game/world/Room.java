@@ -6,7 +6,6 @@ package game.world;
 import game.creature.NPC;
 import game.creature.Player;
 import game.main.Game;
-import static game.main.Game.sSizeX;
 import game.object.Bullet;
 import game.object.Objects;
 import java.util.ArrayList;
@@ -30,19 +29,19 @@ public class Room {
     public ArrayList<Objects> objects ;
     public Objects[] objArr;
     
-    public NPC[] getNPCArr(ArrayList<NPC> enemies) {
-        npcArr = new NPC[enemies.size()]; 
-        npcArr = enemies.toArray(npcArr);
+    public NPC[] getNPCArr() {
+        npcArr = new NPC[npcies.size()]; 
+        npcArr = npcies.toArray(npcArr);
         return npcArr;
     }
     
-    public Bullet[] getBullArr(ArrayList<Bullet> bullets) {
+    public Bullet[] getBullArr() {
         bullArr = new Bullet[bullets.size()];
         bullArr = bullets.toArray(bullArr);
         return bullArr;
     }
     
-    public Objects[] getObjArr(ArrayList<Objects> enemies) {
+    public Objects[] getObjArr() {
         objArr = new Objects[objects.size()]; 
         objArr = objects.toArray(objArr);
         return objArr;
@@ -143,16 +142,15 @@ public class Room {
     }
     
     
-    public void render(Graphics g, int camx, int camy, int ssizex, int ssizey, Player player, Game game) {
-        int h = Display.getHeight();
-        for (double i = -camx / 3 - game.app.getWidth() / 2.0 * 3.0; i < camx / 3 + game.app.getWidth() / 2.0 * 3.0; i += ssizey) {
-             Block.block[199].sprite.draw((int)i, 0, ssizey, ssizey);
+    public void render(Graphics g, int camx, int camy, Player player, Game game) {
+        for (double i = -camx / 3 - Display.getWidth() / 2.0 * 3.0; i < camx / 3 + game.app.getWidth() / 2.0 * 3.0; i += Display.getHeight()) {
+             Block.block[199].sprite.draw((int)i, 0, Display.getHeight(), Display.getHeight());
         }
 
         GL11.glTranslatef(-camx-32, -camy-32, 0);
 
-        for (int x = camx/size-ssizex/size-1; x<camx/size+ssizex/size+2; x++) {
-        for (int y = camy/size+ssizey/size+2; y>camy/size-ssizey/size-1; y--) {
+        for (int x = camx/size-Display.getWidth()/size-1; x<camx/size+Display.getWidth()/size+2; x++) {
+        for (int y = camy/size+Display.getHeight()/size+2; y>camy/size-Display.getHeight()/size-1; y--) {
             
             if(Block.block[get(x,y,1)].sprite!=null)Block.block[get(x,y,1)].sprite.setImageColor(0.5f, 0.5f, 0.5f);
             Block.block[get(x,y,2)].render(g, x, y, size);
@@ -161,19 +159,23 @@ public class Room {
             Block.block[get(x,y,1)].render(g, x, y, size);
         }}
         
-        player.render(g, camx, camy);
-        for(NPC en : getNPCArr(npcies)){
-            en.render(g, camx, camy, sSizeX, sSizeX,game);
+        player.render(g);
+        for(NPC en : getNPCArr()){
+            en.render(g, game);
         }
                 
-        for(Bullet bul : getBullArr(bullets)){
-            bul.render(g, camx, camy, sSizeX, sSizeX,game);
+        for(Bullet bul : getBullArr()){
+            bul.render(g,game);
         }
         
-        for(Objects obj : getObjArr(objects)){
-            obj.render(g, camx, camy, sSizeX, sSizeX,game);
+        for(Objects obj : getObjArr()){
+            obj.render(g,game);
         }
         GL11.glTranslatef(camx+32, camy+32, 0);
+        
+        if (player.invent) {
+                player.shop.render(g,game.player);
+            }
     }
 }
 

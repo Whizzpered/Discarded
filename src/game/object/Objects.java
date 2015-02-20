@@ -6,6 +6,7 @@ package game.object;
 import game.main.Game;
 import game.world.Block;
 import game.world.Room;
+import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
@@ -36,8 +37,8 @@ public class Objects {
         }
     }
     
-    public void render(Graphics g, int camx, int camy, int ssizex, int ssizey, Game game){
-        if(Math.abs(x - game.player.x)<=(ssizex/2)+200 && Math.abs(y - game.player.y)<=(ssizey/2)+200){
+    public void render(Graphics g, Game game){
+        if(Math.abs(x - game.player.x)<=(Display.getWidth()/2)+200 && Math.abs(y - game.player.y)<=(Display.getHeight()/2)+200){
                 g.setColor(Color.white);
                 g.fillRect((float)x,(float)y,8,8);
         }

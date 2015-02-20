@@ -8,6 +8,7 @@ import game.creature.NPC;
 import game.main.Game;
 import game.world.Block;
 import game.world.Room;
+import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
@@ -31,13 +32,13 @@ public class Bullet {
         else {
         x += vx*10;
         
-        if(x<=0 || y<=0 || x >= 42 *64 || y>=22 * 64)game.room.bullets.remove(this);
+        if(x<=-64 || y<=0 || x >= 43 *64 || y>=23 * 64)game.room.bullets.remove(this);
         if(Block.block[room.get((int)x/room.size, Math.round((float)(y-32)/(float)room.size), 1)].solid){
             if(Block.block[room.get((int)x/room.size, Math.round((float)(y-32)/(float)room.size), 1)].destroyable)
                 room.destroy((int)x/room.size, Math.round((float)(y-32)/(float)room.size));
             game.room.bullets.remove(this);
         }
-            for(NPC npc : game.room.getNPCArr(game.room.npcies)){
+            for(NPC npc : game.room.getNPCArr()){
             if(Math.abs(npc.x-x)<=16 && Math.abs(npc.y-y)<=32){
                 if(!hit)npc.hp-=damage;
                 hit = true;
@@ -56,9 +57,8 @@ public class Bullet {
     }
            
     
-    public void render(Graphics g, int camx, int camy, int ssizex, int ssizey, Game game){
-        if(Math.abs(x - game.player.x)<=(ssizex/2)+100 && Math.abs(y - game.player.y)<=(ssizey/2)){
-                
+    public void render(Graphics g, Game game){
+        if(Math.abs(x - game.player.x)<=(Display.getWidth()/2)+100 && Math.abs(y - game.player.y)<=(Display.getHeight()/2)){
                 if(hit){
                     g.setColor(Color.red);
                     g.drawString("-"+damage, (float)(x),(float)(y-tim));

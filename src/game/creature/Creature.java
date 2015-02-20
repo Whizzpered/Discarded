@@ -75,6 +75,6 @@ public class Creature {
         }
     }
     
-    public void render(Graphics g, int camx, int camy) {
+    public void render(Graphics g) {
     }
 }

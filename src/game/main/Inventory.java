@@ -3,6 +3,7 @@
  */
 package game.main;
 
+import game.creature.Player;
 import java.io.File;
 import java.util.HashMap;
 import org.lwjgl.input.Keyboard;
@@ -14,7 +15,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 
-public class Shop {
+public class Inventory {
     Timer butt = new Timer("butt", 20);
     
     int x=2,y=2;
@@ -22,7 +23,7 @@ public class Shop {
     HashMap<String,Image> images = new HashMap<>();
     
     
-    public Shop() {
+    public Inventory() {
         try {initSprites();} catch (Exception ex) {
             System.out.print("Error in Shop: cannot load images");
         }
@@ -41,11 +42,11 @@ public class Shop {
     
     public void buttons(Game game){
         if((Keyboard.isKeyDown(Keyboard.KEY_W)||Keyboard.isKeyDown(Keyboard.KEY_UP)) && butt.is()){
-            if(y>1)y--;
+            if(y==2&&x>2?x<3&&y>1:y>1)y--;
             butt.start();
         }
         if((Keyboard.isKeyDown(Keyboard.KEY_S)||Keyboard.isKeyDown(Keyboard.KEY_DOWN)) && butt.is()){
-            if(y<3)y++;
+            if(y<game.player.items.length/5+1)y++;
             butt.start();
         }
         if((Keyboard.isKeyDown(Keyboard.KEY_A)||Keyboard.isKeyDown(Keyboard.KEY_LEFT)) && butt.is()){
@@ -53,16 +54,18 @@ public class Shop {
             butt.start();
         }
         if((Keyboard.isKeyDown(Keyboard.KEY_D)||Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) && butt.is()){
-            if(x<3)x++;
+            if(x<(y==1?2:game.player.items.length/2))x++;
             butt.start();
         }
-        if((Keyboard.isKeyDown(Keyboard.KEY_P)||Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) && butt.is()){
+        if((Keyboard.isKeyDown(Keyboard.KEY_I)||Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) && butt.is()){
             game.shop = false;
+            game.player.invent = false;
             butt.start();
         }
         
         if((Keyboard.isKeyDown(Input.KEY_ENTER) && butt.is())){
-            switch(number(x,y)){
+            if(y==1)
+                switch(number(x,y)){
                 case (1):
                     if(game.player.xp>=100){
                         game.player.dmg+=3;
@@ -77,6 +80,11 @@ public class Shop {
                     }
                     break;
             }
+            else {
+                switch(itemNumber(x,y)){
+                    
+                }
+            }
              butt.start();
         }
         
@@ -88,22 +96,22 @@ public class Shop {
         return((y-1)*6+x);
     }
     
-    public void render(Graphics g) {
-        GL11.glLoadIdentity();
-                        System.out.println("wow");
+    public int itemNumber(int x, int y) {
+        return((y-2)*6+x);
+    }
+    
+    public void render(Graphics g, Player player) {
+        g.setColor(Color.green);
         g.drawString("Your inventory",700,30);
         g.drawImage(images.get("weapon"),150,120);
         images.get("weapon").draw(150,120);
         g.drawImage(images.get("armour"),200,120);
-        for(int x = 3; x < 6;x++){
-            for(int y = 3; y < 5;y++){
-                g.drawImage(images.get("empty"),x*50,y*50+20);
-        }}
+        for(int i = 0; i < 10;i++){
+           player.items[i].render(g, player.loc_items[i].x,player.loc_items[i].y);
+        }
         drawDescription(g);
         g.setColor(Color.gray);
         g.drawImage(images.get("frame"),99 + 50*x, 69 + y*50);
-        
-        
         
     }
     

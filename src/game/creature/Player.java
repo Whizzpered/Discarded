@@ -7,9 +7,12 @@ package game.creature;
 
 import game.main.Game;
 import game.main.Gui;
+import game.main.Inventory;
 import game.object.Bullet;
+import game.object.Equipment;
 import game.world.Block;
 import game.world.Room;
+import java.awt.Point;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +25,10 @@ public class Player extends Creature {
     
     boolean prev;
     public Gui gui = new Gui(this);
+    public  boolean invent;
+    public Inventory shop;
+    public Equipment[] items = new Equipment[10];
+    public Point [] loc_items = new Point[10];
     
     public Player(){
         super(200,200);  
@@ -34,6 +41,11 @@ public class Player extends Creature {
         try {initSprites();} catch (Exception ex) {
             System.out.print("Error in Player: cannot load images");
         }
+        for(int i = 0; i < 10; i++){
+            items[i] = new Equipment();
+            loc_items[i] = new Point(102+(i>4?i-4:i+1)*50, 120+((int)(i/5)+1)*50);
+        }
+        
     }
     
     @Override
@@ -131,8 +143,9 @@ public class Player extends Creature {
     }
     
     @Override
-    public void render(Graphics g, int camx, int camy) {
+    public void render(Graphics g) {
         g.setColor(Color.green);
-        g.drawImage(images.get("robo"), (float) x, (float) y);
+        if(dir==1)g.drawImage(images.get("robo_right"), (float) x, (float) y);
+        else g.drawImage(images.get("robo_left"), (float) x, (float) y);
     }
 }

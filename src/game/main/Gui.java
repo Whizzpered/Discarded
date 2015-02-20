@@ -45,16 +45,9 @@ public class Gui {
         ysize = game.sSizeY;
     }
     
-    int frames = 0;
-    int l = new Date().getSeconds();
     
     public void tick() {
-        frames++;
-        if(l!=new Date().getSeconds()){
-            fps = frames;
-            frames = 0;
-            l = new Date().getSeconds();
-        }
+        fps = game.app.getFPS();
         if(game.shop)si = true;
         else si = false;
     }
