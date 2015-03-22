@@ -45,6 +45,9 @@ public  class Block {
 
         block[2].solid = true;
         block[2].destroyable = true;
+        
+        block[3].solid = true;
+        block[3].destroyable = true;
 
         block[21].stairs = true;
 
@@ -55,9 +58,8 @@ public  class Block {
     public static void setSprites() {
         block[1].sprite = images.get("Front-brick");
         block[2].sprite = images.get("brick_wall");
+        block[3].sprite = images.get("box");
         block[21].sprite = images.get("ladder");
-        block[22].sprite = images.get("brush").getScaledCopy(2);
-        block[24].sprite = images.get("wheel").getScaledCopy(2);
         block[25].sprite = images.get("window").getScaledCopy(2);
         block[51].sprite = images.get("brick_back");
         block[100].sprite = images.get("door");

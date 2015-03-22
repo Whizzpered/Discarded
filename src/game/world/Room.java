@@ -18,7 +18,7 @@ import org.newdawn.slick.SlickException;
 public class Room {
     
     public Section[][] sections = new Section[5][4];
-    public int width=50, height=30,depth=3, size = 64, blockTim,locate,y;
+    public int width=90, height=90,depth=3, size = 64, blockTim,locate,y;
     public byte [][][] room = new byte [width][height][depth];
     Random r = new Random();
     
@@ -67,14 +67,16 @@ public class Room {
     public void generate() {
         //-----------------------------------Skelet-----------------------------
         for(int x = 0; x<5*8+1; x++){
-            for(int y = 0; y<4*5+1 ; y++){
+            for(int y = 0; y<4*10+1 ; y++){
                 set(x,y, 2,(byte)51);
             }
             }
+        
         for(int x = 0; x<5; x++){
             for(int y = 0; y<4 ; y++){
-               sections[x][y] = new Section(x*8, y*5, this);
+               sections[x][y] = new Section(x*8, y*10, this);
             }}
+        
         for(int y = 0;y<4*(sections[1][1].height)+1;y++){
             set(0,y, 1,(byte)2);
         }
@@ -83,33 +85,41 @@ public class Room {
         }
         for(int x = 0;x<5*sections[1][1].width+1;x++){
             set(x,0, 1,(byte)2);
-        }
+        }   
         
         //---------------------------------Vhod-Vyhod---------------------------
+        
         int i = r.nextInt(4);
-        if(i==0)i++;
-        if(i==1){set(5*(sections[1][1].width)+1, 4*i, 1, (byte)101);
-                 set(5*(sections[1][1].width)+1, 5*i, 1, (byte)1);
-                 set(5*(sections[1][1].width)+2, 5*i, 1, (byte)1);
-        } else {
-                set(5*(sections[1][1].width)+1, 5*i-1, 1, (byte)101);
-                set(5*(sections[1][1].width)+1, 5*i, 1, (byte)1);
-                set(5*(sections[1][1].width)+2, 5*i, 1, (byte)1);
-        }
+        
         if(locate>1){
             set(0, y, 1, (byte)100);
         }else {
             i = r.nextInt(4);
             if(i==0)i++;
-            if(i==1){set(0, 4*i, 1, (byte)100);
-                     set(0, 4*i+1, 1, (byte)1);
+            if(i==1){set(0, 9*i, 1, (byte)100);
+                     set(0, 9*i-1, 1, (byte)100);
+                     set(0, 9*i+1, 1, (byte)1);
             } else {
-                set(0, 5*i-1, 1, (byte)100); 
-                set(0, 5*i+1, 1, (byte)1);              
+                set(0, 10*i-2, 1, (byte)100); 
+                set(0, 10*i-1, 1, (byte)100); 
+                set(0, 10*i+1, 1, (byte)1);              
         }}
+        
+        if(i==0)i++;
+        if(i==1){set(5*(sections[1][1].width)+1, 9, 1, (byte)101);
+                 set(5*(sections[1][1].width)+1, 8, 1, (byte)101);
+                 set(5*(sections[1][1].width)+1, 9*i+1, 1, (byte)1);
+                 set(5*(sections[1][1].width)+2, 9*i+1, 1, (byte)1);
+        } else {
+                set(5*(sections[1][1].width)+1, 10*i-1, 1, (byte)101);
+                set(5*(sections[1][1].width)+1, 10*i-2, 1, (byte)101);
+                set(5*(sections[1][1].width)+1, 10*i, 1, (byte)1);
+                set(5*(sections[1][1].width)+2, 10*i, 1, (byte)1);
+        }
+     
         //---------------------------------Lesenki------------------------------
         for(int y = 1; y<4 ; y++){
-            set(r.nextInt(40)+1,y*5, 1,(byte)21);
+            set(r.nextInt(40)+1,y*sections[1][1].height, 1,(byte)21);
         }
         
     }
@@ -124,8 +134,7 @@ public class Room {
                 room[x][y+i][1] = type;
                 i++;
             }
-        }    
-        
+        }            
     }}
     
     public int get(int x, int y, int c) {
@@ -174,7 +183,7 @@ public class Room {
         GL11.glTranslatef(camx+32, camy+32, 0);
         
         if (player.invent) {
-                player.shop.render(g,game.player);
+                player.inventory.render(g,game.player);
             }
     }
 }

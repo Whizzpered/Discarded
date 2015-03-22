@@ -12,36 +12,31 @@ import org.newdawn.slick.Graphics;
 
 public class Objects {
     public double x, y, vy, ay = 0.4f;
+    public int type;
+    
     
     public Objects(double x, double y, int type) {
         this.x = x;
         this.y = y;
+        this.type = type;
     }
     
     public void tick(Game game) {
-        vy+=ay;
+        vy=ay*10;
         y+=vy;
         
         collision(game.room);
-        
-        if(Math.abs(game.player.x-x)<=32){
-            game.player.xp += 200;
-            game.room.objects.remove(this);
-        }
     }
     
     public void collision(Room world) {
-       if (Block.block[world.get(Math.round((float)x / (float) world.size), (int) (y+8) / world.size, 1)].solid) { // World.size == 64
-            y = ((int) y / world.size) * world.size + 64 - 8;
+       if (Block.block[world.get(Math.round((float)x / (float) world.size), (int) (y+(type==5?30:8)) / world.size, 1)].solid) { // World.size == 64
+            y = ((int) y / world.size) * world.size + 64 - (type==5?30:8);
             vy = 0;
         }
     }
     
     public void render(Graphics g, Game game){
-        if(Math.abs(x - game.player.x)<=(Display.getWidth()/2)+200 && Math.abs(y - game.player.y)<=(Display.getHeight()/2)+200){
-                g.setColor(Color.white);
-                g.fillRect((float)x,(float)y,8,8);
-        }
+        
     }
     
 }

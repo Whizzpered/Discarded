@@ -5,7 +5,7 @@ package game.main;
 
 import java.io.Serializable;
 
-/**
+/*
  * A counter to make some things for fixed time
  */
 public class Timer implements Serializable{
@@ -22,7 +22,7 @@ public class Timer implements Serializable{
     
     public int get() {
         return tick;
-    }
+    }   
     
     public boolean is(){
         if(tick == 0) return true;
@@ -31,8 +31,5 @@ public class Timer implements Serializable{
     
     public void tick(){
         if(tick > 0) tick--;
-    }
-    public void restoreTime(){
-        tick = period;
     }
 }

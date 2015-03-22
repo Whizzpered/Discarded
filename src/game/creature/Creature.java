@@ -16,10 +16,10 @@ import org.newdawn.slick.Image;
 public class Creature {
     
     public double x, y, c, vy, ay = 0.4f;
-    public int vx, hp, maxhp, dir, roomloc, xp, dmg;
+    public int vx, hp, maxhp, dir, roomloc, xp, dmg, energy = 100;
     public boolean onStairs, onGround;
-    HashMap <String, Timer> timer = new HashMap<>();
-    HashMap<String,Image> images = new HashMap<>();
+    public HashMap <String, Timer> timer;
+    public HashMap <String,Image> images;
     
     
     public boolean ranged, sprint;
@@ -27,9 +27,8 @@ public class Creature {
     public Creature(int x, int y) {
         this.x = x;
         this.y = y;
-        timer.put("shoot", new Timer("shoot", 60));
-        timer.put("attention", new Timer("attention", 200));
     }
+    
     
     protected void checkCounters(){
     for(Map.Entry<String, Timer> entry : timer.entrySet()) {
@@ -44,19 +43,18 @@ public class Creature {
     
     public boolean ready(String att){
         return timer.get(att).is();
-    }
-    
-    public int get(String att){
-        return timer.get(att).get();
-    }
+    }  
     
     public void tick(Game game) {
-        if (sprint)x+=vx*6;
-        else x+=vx*4;
+        if (sprint &&  energy>=1){
+            x+=vx*4;
+            energy--;
+        }
+        else x+=vx*2;
         vy+=ay;
         y+=vy;
-        checkCounters();
-        if(vy>8)vy=8;        
+        if(energy<100 && !sprint)energy++;
+        checkCounters();        
     }
     
     public void jump(Room world) {
@@ -64,14 +62,10 @@ public class Creature {
             vy=-12;
     }
     
-    public void smash(Room world) {
-        if(!onGround)
-            vy+=1;
-    }
     
     public void shoot(Game game) {
         if (ranged){
-            game.room.bullets.add(new Bullet(x+dir*16, y+32, dir, this));
+            game.room.bullets.add(new Bullet(x+dir*16, y+32, dir, this,1));
         }
     }
     

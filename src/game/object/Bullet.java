@@ -13,16 +13,17 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 public class Bullet {
-    public int  vx,damage, size = 8,tim = 0;
+    public int  vx,damage, size = 8,tim = 0, type;
     public double x, y;
     boolean hit = false;
     
     
-    public Bullet(double x, double y, int dir, Creature cr) {
+    public Bullet(double x, double y, int dir, Creature cr, int type) {
         this.x = x;
         this.y = y;
         vx = dir;
         damage = cr.dmg;
+        this.type = type;
     }
     
     public void tick(Room room, Game game) {
@@ -32,19 +33,19 @@ public class Bullet {
         else {
         x += vx*10;
         
-        if(x<=-64 || y<=0 || x >= 43 *64 || y>=23 * 64)game.room.bullets.remove(this);
-        if(Block.block[room.get((int)x/room.size, Math.round((float)(y-32)/(float)room.size), 1)].solid){
+        if(x<=-64 || x >= 43 *64 )game.room.bullets.remove(this);
+        if(Block.block[room.get((int)x/room.size, Math.round((float)(y-32)/(float)room.size), 1)].solid){ 
             if(Block.block[room.get((int)x/room.size, Math.round((float)(y-32)/(float)room.size), 1)].destroyable)
-                room.destroy((int)x/room.size, Math.round((float)(y-32)/(float)room.size));
+                if(type==1)room.destroy((int)x/room.size, Math.round((float)(y-32)/(float)room.size));
             game.room.bullets.remove(this);
         }
             for(NPC npc : game.room.getNPCArr()){
-            if(Math.abs(npc.x-x)<=16 && Math.abs(npc.y-y)<=32){
+            if(Math.abs(npc.x-x)<=16 && npc.y-y>=-128 && npc.y-y<0){
                 if(!hit)npc.hp-=damage;
                 hit = true;
             }
         }
-            if(Math.abs(x-game.player.x)<16 && Math.abs(y-game.player.y)<=32){
+            if(Math.abs(x-game.player.x)<16 &&game.player.y-y>=-128 && game.player.y-y<0){
                 if(!hit)game.player.hp-=damage;
                 hit = true;
             }
@@ -53,6 +54,7 @@ public class Bullet {
                 hit  = false;
                 tim = 0;
                 game.room.bullets.remove(this);
+               
             }
     }
            
@@ -62,7 +64,7 @@ public class Bullet {
                 if(hit){
                     g.setColor(Color.red);
                     g.drawString("-"+damage, (float)(x),(float)(y-tim));
-                } else {
+                } else if (type==1) {
                     g.setColor(Color.yellow);
                     g.drawRect((float)x,(float)y,size,size);
                 }
